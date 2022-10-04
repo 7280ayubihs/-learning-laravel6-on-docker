@@ -1,0 +1,19 @@
+version: '3'
+
+services:
+
+  ##########
+  php:
+    # コンテナ名を php に設定
+    container_name: php
+    
+    # ホスト8000番ポートとコンテナの8000番ポートを接続する。
+    ports:
+      - 8000:8000
+
+    # ./docker/php/Dockerfile を参照して構築
+    build: ./docker/php
+    
+    # 開発ディレクトリ(./server)を公開ディレクトリ(/var/www)にマウントする。
+    volumes:
+      - ./server:/var/www
