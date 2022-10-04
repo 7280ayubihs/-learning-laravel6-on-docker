@@ -6,6 +6,7 @@ services:
     # コンテナ名を php に設定
     container_name: php
     # ホスト8000番ポートとコンテナの8000番ポートを接続する。
+    # !!! php artisan serve でポート番号を指定するのが面倒なため !!!
     ports:
       - 8000:8000
     # ./docker/php/Dockerfile を参照して構築
@@ -25,12 +26,12 @@ services:
     # 環境変数を設定
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: test_db
+      MYSQL_DATABASE: todo
       TZ: 'Asia/Tokyo'
     # mysqldコマンドを上書き
     command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     # ディレクトリのマウント
     volumes:
-      - ./docker/db/data:/var/lib/mysql
+      - ./docker/db/data:/var/lib/mysql # いらないかも？
       - ./docker/db/my.cnf:/etc/mysql/conf.d/my.cnf
       - ./docker/db/sql:/docker-entrypoint-initdb.d
