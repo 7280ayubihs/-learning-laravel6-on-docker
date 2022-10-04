@@ -2,18 +2,35 @@ version: '3'
 
 services:
 
-  ##########
   php:
     # コンテナ名を php に設定
     container_name: php
-    
     # ホスト8000番ポートとコンテナの8000番ポートを接続する。
     ports:
       - 8000:8000
-
     # ./docker/php/Dockerfile を参照して構築
     build: ./docker/php
-    
-    # 開発ディレクトリ(./server)を公開ディレクトリ(/var/www)にマウントする。
+    # ディレクトリのマウント
     volumes:
       - ./server:/var/www
+
+  db:
+    # mysql5.7の公式イメージ使用
+    image: mysql:5.7
+    # コンテナ名を db に設定
+    container_name: db
+    # ホスト3306番ポートとコンテナの3306番ポートを接続する。
+    ports:
+      - 3306:3306
+    # 環境変数を設定
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: test_db
+      TZ: 'Asia/Tokyo'
+    # mysqldコマンドを上書き
+    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    # ディレクトリのマウント
+    volumes:
+      - ./docker/db/data:/var/lib/mysql
+      - ./docker/db/my.cnf:/etc/mysql/conf.d/my.cnf
+      - ./docker/db/sql:/docker-entrypoint-initdb.d
