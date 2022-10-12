@@ -32,7 +32,8 @@ services:
       - 8080:80
     # ディレクトリのマウント
     volumes:
-      - ./server/sample:/src/www
+      # - ./server/sample:/src/www
+      - ./www:/src/www
       - ./docker/app/php/php.ini:/etc/php.ini
       - ./docker/app/php-fpm/www.conf:/etc/php-fpm.d/www.conf
       - ./docker/app/php-fpm/php-fpm.conf:/etc/php-fpm.conf
