@@ -2,19 +2,6 @@ version: '3'
 
 services:
 
-  php:
-    # コンテナ名を php に設定
-    container_name: php
-    # ホスト8000番ポートとコンテナの8000番ポートを接続する。
-    # !!! php artisan serve でポート番号を指定するのが面倒なため !!!
-    ports:
-      - 8000:8000
-    # ./docker/php/Dockerfile を参照して構築
-    build: ./docker/php
-    # ディレクトリのマウント
-    volumes:
-      - ./server:/var/www
-
   db:
     # mysql5.7の公式イメージ使用
     image: mysql:5.7
@@ -32,6 +19,24 @@ services:
     command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     # ディレクトリのマウント
     volumes:
-      - ./docker/db/data:/var/lib/mysql # いらないかも？
       - ./docker/db/my.cnf:/etc/mysql/conf.d/my.cnf
       - ./docker/db/sql:/docker-entrypoint-initdb.d
+
+  app:
+    # コンテナ名を app に設定
+    container_name: app
+    # ./docker/app/Dockerfile を参照して構築
+    build: ./docker/app
+    # ホスト8080番ポートとコンテナ80番ポートを接続
+    ports:
+      - 8080:80
+    # ディレクトリのマウント
+    volumes:
+      - ./server/sample:/src/www
+      - ./docker/app/php/php.ini:/etc/php.ini
+      - ./docker/app/php-fpm/www.conf:/etc/php-fpm.d/www.conf
+      - ./docker/app/php-fpm/php-fpm.conf:/etc/php-fpm.conf
+      - ./docker/app/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    # db コンテナに依存する
+    depends_on:
+      - db  
